@@ -1,0 +1,357 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.IO;
+using Microsoft.Win32;
+using System.Management;
+using System.Diagnostics;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        public class USBSerialNumber
+        {
+
+            string _serialNumber;
+            string _driveLetter;
+
+            public string getSerialNumberFromDriveLetter(string driveLetter)
+            {
+                this._driveLetter = driveLetter.ToUpper();
+
+                if (!this._driveLetter.Contains(":"))
+                {
+                    this._driveLetter += ":";
+                }
+
+                matchDriveLetterWithSerial();
+
+                return this._serialNumber;
+            }
+
+            private void matchDriveLetterWithSerial()
+            {
+
+                string[] diskArray;
+                string driveNumber;
+                string driveLetter;
+
+                ManagementObjectSearcher searcher1 = new ManagementObjectSearcher("SELECT * FROM Win32_LogicalDiskToPartition");
+                foreach (ManagementObject dm in searcher1.Get())
+                {
+                    diskArray = null;
+                    driveLetter = getValueInQuotes(dm["Dependent"].ToString());
+                    diskArray = getValueInQuotes(dm["Antecedent"].ToString()).Split(',');
+                    driveNumber = diskArray[0].Remove(0, 6).Trim();
+                    if (driveLetter == this._driveLetter)
+                    {
+                        /* This is where we get the drive serial */
+                        ManagementObjectSearcher disks = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
+                        foreach (ManagementObject disk in disks.Get())
+                        {
+
+                            if (disk["Name"].ToString() == ("\\\\.\\PHYSICALDRIVE" + driveNumber) & disk["InterfaceType"].ToString() == "USB")
+                            {
+                                this._serialNumber = parseSerialFromDeviceID(disk["PNPDeviceID"].ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
+            private string parseSerialFromDeviceID(string deviceId)
+            {
+                string[] splitDeviceId = deviceId.Split('\\');
+                string[] serialArray;
+                string serial;
+                int arrayLen = splitDeviceId.Length - 1;
+
+                serialArray = splitDeviceId[arrayLen].Split('&');
+                serial = serialArray[0];
+
+                return serial;
+            }
+
+            private string getValueInQuotes(string inValue)
+            {
+                string parsedValue = "";
+
+                int posFoundStart = 0;
+                int posFoundEnd = 0;
+
+                posFoundStart = inValue.IndexOf("\"");
+                posFoundEnd = inValue.IndexOf("\"", posFoundStart + 1);
+
+                parsedValue = inValue.Substring(posFoundStart + 1, (posFoundEnd - posFoundStart) - 1);
+
+                return parsedValue;
+            }
+
+        }
+
+        // alt tab engelleme
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        // windows tuþu engelleme
+
+        [StructLayout(LayoutKind.Sequential)]
+
+        private struct KeyboardDLLStruct
+        {
+            public Keys key;
+            public int scanCode;
+            public int flags;
+            public int time;
+            public IntPtr extra;
+        }
+
+        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetWindowsHookEx(int id, LowLevelKeyboardProc callback, IntPtr hMod, uint dwThreadId);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool UnhookWindowsHookEx(IntPtr hook);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr CallNextHookEx(IntPtr hook, int nCode, IntPtr wp, IntPtr lp);
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr GetModuleHandle(string name);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern short GetAsyncKeyState(Keys key);
+        private IntPtr ptrHook;
+        private LowLevelKeyboardProc objKeyboardProcess;
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if (serial_kontrol == false)
+            {
+                ProcessModule objCurrentModule = Process.GetCurrentProcess().MainModule;
+                objKeyboardProcess = new LowLevelKeyboardProc(captureKey);
+                ptrHook = SetWindowsHookEx(13, objKeyboardProcess, GetModuleHandle(objCurrentModule.ModuleName), 0);
+            }
+            timer1.Enabled = true;
+            timer4.Enabled = true;
+            this.Show();
+            label2.Visible = false;
+            label3.Visible = false;
+            label4.Visible = false;
+            if (serial_kontrol == true)
+            {
+                timer2.Interval = 1000;
+                timer2.Enabled = true;
+            }
+        }
+
+        private IntPtr captureKey(int nCode, IntPtr wp, IntPtr lp)
+        {
+            if (nCode >= 0)
+            {
+                KeyboardDLLStruct objKeyInfo = (KeyboardDLLStruct)Marshal.PtrToStructure(lp, typeof(KeyboardDLLStruct));
+                if (objKeyInfo.key == Keys.RWin || objKeyInfo.key == Keys.LWin)
+                {
+                    return (IntPtr)1;
+                }
+            }
+            return CallNextHookEx(ptrHook, nCode, wp, lp);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            string saat = DateTime.Now.ToLongTimeString();
+            label1.Text = saat;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("shutdown", "-f -s -t 1");
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("ShutDown", "/r -f -t 1");
+        }
+
+        bool flas_takilimi = false, serial_kontrol = false;
+        private void button1_Click(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            label3.Text = "";
+            label4.Text = "";
+            DriveInfo[] diskler = DriveInfo.GetDrives();
+
+            foreach (DriveInfo disk in diskler)
+            {
+                if (disk.DriveType == DriveType.Removable)
+                {
+                    string yazi, yazi2, uzanti = "pass.ini", uzanti2 = "ogr.ini";
+                    string DosyaYolu = disk.Name + "pass" + ".ini";
+
+                    label4.Text = disk.Name;
+
+                    if (System.IO.File.Exists(DosyaYolu))
+                    {
+                        StreamReader oku; //yol bilgisini akýþtan okuyacak. yani dosyamýzý okuyacak
+
+                        oku = File.OpenText(disk.Name + uzanti);
+                        while ((yazi = oku.ReadLine()) != null) //satýr boþ olana kadar satýr satýr okumaya devam eder
+                        {
+                            label2.Text = yazi.ToString();
+                            flas_takilimi = true;
+                        }
+                        oku.Close();//okumayý kapat
+
+                        // ogr list okuma //
+                        StreamReader ogr_oku; //yol bilgisini akýþtan okuyacak. yani dosyamýzý okuyacak
+
+                        ogr_oku = File.OpenText(disk.Name + uzanti2);
+                        while ((yazi2 = ogr_oku.ReadLine()) != null) //satýr boþ olana kadar satýr satýr okumaya devam eder
+                        {
+                            label3.Text = yazi2.ToString();
+                            flas_takilimi = true;
+                        }
+                        oku.Close();//okumayý kapat
+
+                        //////////////////////////
+
+                        label4.Text = disk.Name;
+                        string Drive = label4.Text.Substring(0, 2);
+                        USBSerialNumber usb = new USBSerialNumber();
+                        string serial = usb.getSerialNumberFromDriveLetter(Drive);
+                        string sifre = "8ed1d580695004f9274199b557a5a942 " + serial;
+
+                        if (label2.Text == sifre)
+                        {
+                            this.Hide();
+                            MessageBox.Show("USB Bellek baþarýyla doðrulandý akýllý tahtayý kullanabilirsiniz.", "<?> Bilgi Mesajý");
+                            serial_kontrol = true;
+                            flas_takilimi = true;
+                            notifyIcon1.Visible = true;
+                            notifyIcon1.BalloonTipText = "Hoþ geldiniz " + label3.Text + " " + "\nÝyi dersler...";
+                            notifyIcon1.BalloonTipTitle = "Kilit Programý.";
+                            notifyIcon1.Text = "Program aktif.";
+                            notifyIcon1.ShowBalloonTip(1000);
+                            timer2.Start();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("USB bellek doðrulanmadý.", "<!> Hata Mesajý");
+                        flas_takilimi = false;
+                    }
+                }
+            }
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Alt && e.KeyCode == Keys.F4)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            label2.Text = "";
+            DriveInfo[] diskler = DriveInfo.GetDrives();
+
+            foreach (DriveInfo disk in diskler)
+            {
+                if (disk.DriveType == DriveType.Removable)
+                {
+                    string yazi, uzanti = "pass.ini";
+                    string DosyaYolu = disk.Name + "pass" + ".ini";
+
+                    if (System.IO.File.Exists(DosyaYolu))
+                    {
+                        StreamReader oku; //yol bilgisini akýþtan okuyacak. yani dosyamýzý okuyacak
+
+                        oku = File.OpenText(disk.Name + uzanti);
+                        while ((yazi = oku.ReadLine()) != null) //satýr boþ olana kadar satýr satýr okumaya devam eder
+                        {
+                            label2.Text = yazi.ToString();
+                            //      flas_takilimi = true;
+                        }
+                        oku.Close();//okumayý kapat
+
+
+                        ///////////////////////////////
+
+                        label4.Text = "";
+                        label4.Text = disk.Name;
+                        string Drive = label4.Text.Substring(0, 2);
+                        USBSerialNumber usb = new USBSerialNumber();
+                        string serial = usb.getSerialNumberFromDriveLetter(Drive);
+                        string sifre = "8ed1d580695004f9274199b557a5a942 " + serial;
+
+                        if (label2.Text != sifre)
+                        {
+                            this.Show();
+                            flas_takilimi = false;
+                            serial_kontrol = false;
+                            notifyIcon1.Visible = false;
+                            timer3.Start();
+                            timer2.Stop();
+                        }
+
+                    }
+
+                    else
+                    {
+                        flas_takilimi = false;
+                    }
+                }
+            }
+        }
+
+        private void Form1_Deactivate(object sender, EventArgs e)
+        {
+            if (flas_takilimi == false)
+            {
+                timer3.Start();
+            }
+        }
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            timer3.Enabled = false;
+            Show();
+            Activate();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("Bu yazýlým Berkan ÞAHÝN ve Hakan DAÐLI tarafýndan kodlanmýþtýr/tasarlanmýþtýr.", "<?> Bilgi Mesajý");
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            MessageBox.Show("Bu yazýlým Berkan ÞAHÝN ve Hakan DAÐLI tarafýndan kodlanmýþtýr/tasarlanmýþtýr.", "<?> Bilgi Mesajý");
+        }
+
+        private void timer4_Tick(object sender, EventArgs e)
+        {
+            if (flas_takilimi == false)
+            {
+                SetForegroundWindow(this.Handle);
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Application.SetSuspendState(PowerState.Suspend, false, false);
+        }
+    }
+}

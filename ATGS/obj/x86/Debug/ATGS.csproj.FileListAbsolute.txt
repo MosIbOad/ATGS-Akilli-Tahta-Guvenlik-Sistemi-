@@ -1,0 +1,37 @@
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\bin\Debug\ATGS.exe.config
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\obj\x86\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\obj\x86\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\obj\x86\Debug\ATGS.Form1.resources
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\obj\x86\Debug\ATGS.Properties.Resources.resources
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\obj\x86\Debug\ATGS.csproj.GenerateResource.Cache
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\bin\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\HDBS\bin\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\bin\Debug\ATGS.exe.config
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\bin\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\bin\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.Form1.resources
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.Properties.Resources.resources
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.csproj.GenerateResource.Cache
+C:\Users\Berkan\Desktop\güncel\akıllı tahta kilit programı\ATGS\obj\x86\Debug\ATGS.csprojResolveAssemblyReference.cache
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\bin\Debug\ATGS.exe.config
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\bin\Debug\ATGS.exe
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\bin\Debug\ATGS.pdb
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.csprojResolveAssemblyReference.cache
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.Form1.resources
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.Properties.Resources.resources
+C:\Users\Berkan\Desktop\güncel proje\akıllı tahta güvenlik sistemi\ATGS\obj\x86\Debug\ATGS.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\bin\Debug\ATGS.exe.config
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\bin\Debug\ATGS.exe
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\bin\Debug\ATGS.pdb
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.csproj.AssemblyReference.cache
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.csproj.SuggestedBindingRedirects.cache
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.Form1.resources
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.Properties.Resources.resources
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.csproj.GenerateResource.cache
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.exe
+C:\Users\Administrator\Desktop\Yeni klasör (2)\ATGS\obj\x86\Debug\ATGS.pdb
